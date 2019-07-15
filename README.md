@@ -32,5 +32,7 @@ Python
 ## Contributors
 
 Steven Te - testeven152@csu.fullerton.edu
+
 Alex Ma -
+
 Alice Shin - 
