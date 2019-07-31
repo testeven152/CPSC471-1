@@ -17,3 +17,30 @@ ftp> quit (disconnects from the server and exits)
 
 import socket
 import sys
+
+# Server address
+serverAddr = sys.argv[1]
+
+# Server port
+serverPort = sys.argv[2]
+
+print("Server Address: " + serverAddr)
+print("Port Number: " + serverPort)
+
+# this creates the TCP socket
+clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# client socket connects to address at port
+clientSocket.connect((serverAddr, int(serverPort)))
+
+command = ''
+quit = 0
+
+while quit == 0: 
+    print ('ftp> ')
+    command = input()
+    
+
+
+# close connection
+clientSocket.close()
