@@ -10,6 +10,8 @@ Python
 
 ### What kinds of messages will be exchanged across the control channel?
 
+Get, Put, LS, and Quit
+
 ### How should the other side respond to the messages?
 
 ### What sizes/formats will the messages have?

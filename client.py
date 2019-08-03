@@ -101,8 +101,8 @@ serverAddr = sys.argv[1]
 # Server port
 serverPort = sys.argv[2]
 
-print("Server Address: " + serverAddr + "\n")
-print("Port Number: " + serverPort + "\n")
+print("Server Address: " + serverAddr)
+print("Port Number: " + serverPort)
 
 # this creates the TCP socket
 clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

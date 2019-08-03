@@ -7,7 +7,6 @@ python serv.py <PORTNUMBER>
 For example: python serv.py 1234 """
 
 import socket
-import commands
 import sys
 
 # ------- Functions -------
@@ -34,11 +33,14 @@ def recvAll(sock, numBytes):
 	
 	return recvBuff
 
-def ls()
+def ls():
+    print("ls")
 
-def put(fileName)
+def put():
+    print("put")
 
-def get(fileName)
+def get():
+    print("get")
 
 # ------------------------
 
@@ -51,9 +53,40 @@ print("Port Number: " + portnum)
 serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # bind socket to port
-serverSocket.bind(('localhost'),int(portnum))
+serverSocket.bind(('localhost',int(portnum)))
 
 # start listening on socket
 serverSocket.listen(5)
 
 
+while True:
+
+    print ("Waiting for connections...")
+
+    # Accept connections
+    client, addr = serverSocket.accept()
+
+    print ("Accepted connection from client: ", addr)
+
+    command = ''
+    quit = 0
+    while quit == 0:
+
+        command = client.recv(4)
+
+        if command == "get":
+            client.send("SUCCESS\n")
+            get()
+        elif command == "put":
+            client.send("SUCCESS\n")
+            put()
+        elif command == "ls":
+            client.send("SUCCESS\n")
+            ls()
+        elif command == "quit":
+            client.send("SUCCESS\n")
+            quit = 1
+        else:
+            client.send("FAILURE\n")
+
+    client.close()
