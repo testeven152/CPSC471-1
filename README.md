@@ -26,8 +26,30 @@ Get, Put, LS, and Quit
 
 ## How to execute the program
 
-1. ...
-2. ...
+1. Open terminal and run the server program using...
+
+```
+python server.py <serverport>
+```
+
+After running this command, you should see...
+
+```
+Listening...
+```
+
+2. Open a second terminal window and run the client program using...
+
+```
+python client.py <servermachine> <serverport>
+```
+
+On the terminal window running the server program, you will be able to see...
+
+```
+Connected.
+```
+
 
 ## Anything Special About Our Submission
 
