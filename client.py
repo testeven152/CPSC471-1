@@ -18,7 +18,6 @@ ftp> quit (disconnects from the server and exits)
 import socket
 import sys
 
-# ------- Functions -------
 def recvAll(sock, numBytes):
 
 	# The buffer
@@ -42,13 +41,15 @@ def recvAll(sock, numBytes):
 	
 	return recvBuff
 
+def tempsocket():
+
 def get(file, server, port):
     print("get")
 
-def put(file, server, port):
-
-    tempsocket = socket.socket(socket.AF_INT, socket.SOCK_STREAM)
-    tempsocket.connect((server, port))
+def put(file, server):
+    port = int(clientSocket.recv(5))
+    tempsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tempsocket.connect((server, int(port)))
     tempsocket.send(file)
     fileObj = open(file, "r")
     numSent = 0
@@ -88,12 +89,21 @@ def put(file, server, port):
             break
 
     tempsocket.close()
-    fileObj.close()
 
-def ls():
-    print("ls")
+def ls(server):
+    port = int(clientSocket.recv(5))
+    tempsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tempsocket.connect((server, port))
 
-# ------------------------
+    directory = tempsocket.recv(1024)
+
+    print(directory)
+
+    tempsocket.close()
+
+if len(sys.argv) != 3:
+    print("Invalid arguments")
+    sys.exit()
 
 # Server address
 serverAddr = sys.argv[1]
@@ -111,32 +121,31 @@ clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 clientSocket.connect((serverAddr, int(serverPort)))
 
 command = ''
-quit = 0
 
-while quit == 0: 
+while 1: 
 
     #print ftp> and ask user for command
     command = raw_input('ftp> ')
 
-    if 'get ' in command:
+    if 'get' in command:
         clientSocket.send("get")
-        print(clientSocket.recv(8))
+        print clientSocket.recv(8)
         get(command[4:], serverAddr, serverPort)
-    elif 'put ' in command:
+    elif 'put' in command:
         clientSocket.send("put")
-        print(clientSocket.recv(8))
-        put(command[4:], serverAddr, serverPort)
+        print clientSocket.recv(8)
+        put(command[4:], serverAddr)
     elif command == "ls":
         clientSocket.send("ls")
-        print(clientSocket.recv(8))
-        ls()
+        print clientSocket.recv(8)
+        ls(serverAddr)
     elif command == "quit":
         clientSocket.send("quit")
-        print(clientSocket.recv(7))
-        quit = 1
+        print clientSocket.recv(7)
+        break
     else:
         clientSocket.send("fail")
-        print(clientSocket.recv(8))
+        print clientSocket.recv(8)
 
 # close connection
 clientSocket.close()

@@ -8,8 +8,8 @@ For example: python serv.py 1234 """
 
 import socket
 import sys
+import commands
 
-# ------- Functions -------
 def recvAll(sock, numBytes):
 
 	# The buffer
@@ -33,16 +33,77 @@ def recvAll(sock, numBytes):
 	
 	return recvBuff
 
-def ls():
-    print("ls")
-
-def put():
-    print("put")
+def tempsocket():
+    
 
 def get():
     print("get")
 
-# ------------------------
+def put():
+    tempsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tempsocket.bind(('',0))
+    port = tempsocket.getsockname()[1]
+    client.send(str(port))
+    tempsocket.listen(1)
+    linkTemp, linkAddr = tempsocket.accept()
+
+    fileName = connTemp.recv(1024)
+    fileObj = open(fileName, 'wb')
+
+    # The buffer to all data received from the
+	# the client.
+    fileData = ""
+	
+	# The temporary buffer to store the received
+	# data.
+    recvBuff = ""
+	
+	# The size of the incoming file
+    fileSize = 0	
+	
+	# The buffer containing the file size
+    fileSizeBuff = ""
+	
+	# Receive the first 10 bytes indicating the
+	# size of the file
+    fileSizeBuff = recvAll(linkTemp, 10)
+		
+	# Get the file size
+    fileSize = int(fileSizeBuff)
+	
+	# Get the file data
+    fileData = recvAll(linkTemp, fileSize)
+	
+    fileObj.write(fileData)
+
+    print "File Name: ", fileName
+    print "Size in bytes: ", fileSize
+		
+	# Close our side
+    fileObj.close()
+    linkTemp.close()
+
+def ls():
+    tempsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tempsocket.bind(('', 0))
+    port = tempsocket.getsockname()[1]
+    client.send(str(port))
+    tempsocket.listen(1)
+    directory = ''
+    linkTemp, linkAddr = tempsocket.accept()
+
+    # Run ls command, get output, and print it
+    for line in commands.getstatusoutput('ls -l'):
+        directory = str(line) + '\n'
+
+    #send directory back to client
+    linkTemp.send(directory)
+
+    linkTemp.close()
+
+if len(sys.argv) != 2:
+    print("Invalid arguments")
+    sys.exit()
 
 # Server port
 portnum = sys.argv[1]
@@ -53,40 +114,38 @@ print("Port Number: " + portnum)
 serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # bind socket to port
-serverSocket.bind(('localhost',int(portnum)))
+serverSocket.bind(('localhost', int(portnum)))
 
 # start listening on socket
 serverSocket.listen(5)
 
+while 1:
 
-while True:
-
-    print ("Waiting for connections...")
+    print ("Listening...")
 
     # Accept connections
     client, addr = serverSocket.accept()
 
-    print ("Accepted connection from client: ", addr)
+    print ("Connected.")
 
     command = ''
-    quit = 0
-    while quit == 0:
+    while 1:
 
         command = client.recv(4)
 
         if command == "get":
-            client.send("SUCCESS\n")
+            client.send("SUCCESS")
             get()
         elif command == "put":
-            client.send("SUCCESS\n")
+            client.send("SUCCESS")
             put()
         elif command == "ls":
-            client.send("SUCCESS\n")
+            client.send("SUCCESS")
             ls()
         elif command == "quit":
-            client.send("SUCCESS\n")
-            quit = 1
+            client.send("SUCCESS")
+            break
         else:
-            client.send("FAILURE\n")
+            client.send("FAILURE")
 
     client.close()
