@@ -33,21 +33,22 @@ def recvAll(sock, numBytes):
 	
 	return recvBuff
 
-def tempsocket():
-    
-
-def get():
-    print("get")
-
-def put():
+def newsocket():
     tempsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tempsocket.bind(('',0))
     port = tempsocket.getsockname()[1]
     client.send(str(port))
     tempsocket.listen(1)
+    return tempsocket
+
+def get():
+    print("get")
+
+def put():
+    tempsocket = newsocket()
     linkTemp, linkAddr = tempsocket.accept()
 
-    fileName = connTemp.recv(1024)
+    fileName = linkTemp.recv(1024)
     fileObj = open(fileName, 'wb')
 
     # The buffer to all data received from the
@@ -69,26 +70,22 @@ def put():
     fileSizeBuff = recvAll(linkTemp, 10)
 		
 	# Get the file size
-    fileSize = int(fileSizeBuff)
+    fileSize = int(len(fileSizeBuff))
 	
 	# Get the file data
     fileData = recvAll(linkTemp, fileSize)
 	
     fileObj.write(fileData)
 
-    print "File Name: ", fileName
-    print "Size in bytes: ", fileSize
+    print "File Name: " , fileName
+    print "Size: ", fileSize
 		
 	# Close our side
     fileObj.close()
     linkTemp.close()
 
 def ls():
-    tempsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tempsocket.bind(('', 0))
-    port = tempsocket.getsockname()[1]
-    client.send(str(port))
-    tempsocket.listen(1)
+    tempsocket = newsocket()
     directory = ''
     linkTemp, linkAddr = tempsocket.accept()
 
@@ -100,10 +97,6 @@ def ls():
     linkTemp.send(directory)
 
     linkTemp.close()
-
-if len(sys.argv) != 2:
-    print("Invalid arguments")
-    sys.exit()
 
 # Server port
 portnum = sys.argv[1]
