@@ -6,24 +6,6 @@ Socket Project for CPSC 471 - Computer Communications
 
 Python
 
-## Protocol Design
-
-### What kinds of messages will be exchanged across the control channel?
-
-Get, Put, LS, and Quit
-
-### How should the other side respond to the messages?
-
-### What sizes/formats will the messages have?
-
-### What message exchanges have to take place in order to setup a file transfer channel?
-
-### How will the receiving side know when to start/stop receiving the file?
-
-### How to avoid overflowing TCP buffers?
-
-### Diagrams
-
 ## How to execute the program
 
 1. Open terminal and run the server program using...
@@ -50,13 +32,14 @@ On the terminal window running the server program, you will be able to see...
 Connected.
 ```
 
+## Anything special about our submission
 
-## Anything Special About Our Submission
+No.
 
 ## Contributors
 
 Steven Te - testeven152@csu.fullerton.edu
 
-Alex Ma -
+Alex Ma - alexjmma@csu.fullerton.edu
 
-Alice Shin - 
+Alice Shin - anabelleshhin@csu.fullerton.edu

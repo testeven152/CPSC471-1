@@ -47,8 +47,22 @@ def newsocket(serveraddr_):
     newsocket.connect((serveraddr_, int(port)))
     return newsocket
 
-def get(file, server, port):
-    print("get")
+def get(file, server):
+    tempsocket = newsocket(server)
+    tempsocket.send(file)
+    fileObj = open(file, 'wb')
+    fileData = ""
+    recvBuff = ""
+    fileSize = 0
+    fileSizeBuff = ""
+    fileSizeBuff = recvAll(tempsocket, 10)
+    fileSize = int(fileSizeBuff)
+    fileData = recvAll(tempsocket, fileSize)
+    fileObj.write(fileData)
+    tempsocket.send(str(fileSize))
+    fileObj.close()
+    tempsocket.close()
+
 
 def put(file, server):
     tempsocket = newsocket(server)
@@ -128,7 +142,7 @@ while 1:
     if 'get' in command:
         clientSocket.send("get")
         print(clientSocket.recv(8))
-        get(command[4:], serverAddr, serverPort)
+        get(command[4:], serverAddr)
     elif 'put' in command:
         clientSocket.send("put")
         print(clientSocket.recv(8))

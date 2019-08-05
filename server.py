@@ -34,15 +34,61 @@ def recvAll(sock, numBytes):
 	return recvBuff
 
 def newsocket():
-    tempsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tempsocket.bind(('',0))
-    port = tempsocket.getsockname()[1]
+    newsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    newsocket.bind(('',0))
+    port = newsocket.getsockname()[1]
     client.send(str(port))
-    tempsocket.listen(1)
-    return tempsocket
+    newsocket.listen(1)
+    return newsocket
 
 def get():
-    print("get")
+    tempsocket = newsocket()
+    linkTemp, linkAddr = tempsocket.accept()
+
+    fileName = linkTemp.recv(1024)
+    fileObj = open(fileName, "r")
+    
+    numSent = 0
+    fileData = None
+
+    while True:
+            # Read 65536 bytes of data
+            fileData = fileObj.read(65536)
+            
+            # Make sure we did not hit EOF
+            if fileData:
+                    
+                # Get the size of the data read
+                # and convert it to string
+                dataSizeStr = str(len(fileData))
+                
+                # Prepend 0's to the size string
+                # until the size is 10 bytes
+                while len(dataSizeStr) < 10:
+                    dataSizeStr = "0" + dataSizeStr
+            
+                # Prepend the size of the data to the
+                # file data.
+                fileData = dataSizeStr + fileData	
+                
+                # The number of bytes sent
+                numSent = 0
+                
+                # Send the data!
+                while len(fileData) > numSent:
+                    numSent += linkTemp.send(fileData[numSent:])
+            
+            # The file has been read. We are done
+            else:
+                break
+    
+    fileSize = linkTemp.recv(1024)
+
+    fileObj.close()
+    linkTemp.close()
+
+    print "File Name: " , fileName
+    print "Size: " , fileSize
 
 def put():
     tempsocket = newsocket()
@@ -80,7 +126,6 @@ def put():
     print "File Name: " , fileName
     print "Size: ", fileSize
 		
-	# Close our side
     fileObj.close()
     linkTemp.close()
 
