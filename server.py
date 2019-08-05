@@ -22,7 +22,7 @@ def recvAll(sock, numBytes):
 	while len(recvBuff) < numBytes:
 		
 		# Attempt to receive bytes
-		tmpBuff =  sock.recv(numBytes)
+		tmpBuff = sock.recv(numBytes)
 		
 		# The other side has closed the socket
 		if not tmpBuff:

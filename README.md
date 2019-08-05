@@ -42,4 +42,4 @@ Steven Te - testeven152@csu.fullerton.edu
 
 Alex Ma - alexjmma@csu.fullerton.edu
 
-Alice Shin - anabelleshhin@csu.fullerton.edu
+Ah-Hyun Shin - anabelleshhin@csu.fullerton.edu
